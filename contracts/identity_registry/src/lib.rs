@@ -368,22 +368,34 @@ impl IdentityRegistryContract {
         Ok(())
     }
 
-    /// Perform a health check on the contract
+    /// Perform a health check on the contract.
+    /// Returns (status, version, timestamp) with standardized status values:
+    /// "OK", "PAUSED", "NOT_INIT", "DEGRADED".
     pub fn health_check(env: Env) -> (Symbol, u32, u64) {
         let initialized = env.storage().instance().has(&DataKey::Initialized);
-        let status = if initialized {
-            symbol_short!("OK")
-        } else {
+        let paused: bool = env
+            .storage()
+            .instance()
+            .get(&DataKey::Paused)
+            .unwrap_or(false);
+
+        let status = if !initialized {
             symbol_short!("NOT_INIT")
+        } else if paused {
+            symbol_short!("PAUSED")
+        } else {
+            symbol_short!("OK")
         };
 
-        // Emit health check event
+        let version: u32 = 1;
+        let timestamp = env.ledger().timestamp();
+
         env.events().publish(
             (Symbol::new(&env, "HealthCheck"),),
-            (status.clone(), env.ledger().timestamp()),
+            (status.clone(), version, timestamp),
         );
 
-        (status, 1, env.ledger().timestamp())
+        (status, version, timestamp)
     }
 
     /// Returns true if the contract is currently paused.

@@ -7,8 +7,8 @@ pub mod errors;
 pub use errors::Error;
 use soroban_sdk::xdr::ToXdr;
 use soroban_sdk::{
-    contract, contracterror, contractimpl, contracttype, symbol_short, Address, Bytes, BytesN, Env, String,
-    Symbol, Vec,
+    contract, contracterror, contractimpl, contracttype, symbol_short, Address, Bytes, BytesN, Env,
+    String, Symbol, Vec,
 };
 use vitastellar_sanitization::{
     sanitize_id, sanitize_string, sanitize_url, SanitizationError, MAX_GENERAL_LEN,

@@ -68,6 +68,17 @@ jobs:
           files: cobertura.xml
           fail_ci_if_error: false
 
+  loc-check:
+    name: LOC Manifest Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate threat-model LOC manifest
+        run: |
+          chmod +x scripts/loc_report.sh
+          ./scripts/loc_report.sh --check
+
   format:
     name: Format Check
     runs-on: ubuntu-latest
